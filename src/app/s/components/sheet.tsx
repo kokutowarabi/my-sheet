@@ -24,7 +24,7 @@ export default async function Sheet({ sheetId }: SheetProps) {
       style={{
         gridTemplate: `${CORNER_SIDE} 1fr / ${CELL_WIDTH} 1fr`,
       }}
-      className="grid w-fit"
+      className="grid overflow-auto max-w-screen max-h-[calc(100vh-(65px+68px))] hidden-scrollbar"
     >
       <CornerCell />
       <ColumnHeaderCells columns={columns} />

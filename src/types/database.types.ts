@@ -318,6 +318,15 @@ export type Database = {
         }
         Returns: string
       }
+      transaction_create_sheet_data18: {
+        Args: {
+          newUserId: string
+          newSheetName: string
+          newColumnNames: string[]
+          newRowNames: string[]
+        }
+        Returns: string
+      }
       update_column_order: {
         Args: {
           updates: Json
