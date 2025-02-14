@@ -1,5 +1,5 @@
 // @/data/getUser.ts
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 export default async function getUser(userId: string): Promise<User | null> {
   const { data, error } = await supabase

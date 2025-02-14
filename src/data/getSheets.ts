@@ -1,6 +1,6 @@
 // @/data/getSheets.ts
 
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase-client';
 
 /**
  * userId が指定されている場合は、そのユーザーに紐づくシートのみを取得し、

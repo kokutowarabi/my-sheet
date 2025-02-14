@@ -1,7 +1,7 @@
 // @/lib/redirect.ts
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { authOptions } from "./auth-options";
 
 export default async function Redirect() {
   const session = await getServerSession(authOptions);

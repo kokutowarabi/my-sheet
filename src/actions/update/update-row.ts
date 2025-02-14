@@ -1,7 +1,7 @@
 // @/actions/updateRow.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 interface UpdateRowParams {
   rowId: string;

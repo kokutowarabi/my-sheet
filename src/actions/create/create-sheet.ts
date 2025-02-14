@@ -1,7 +1,7 @@
 // @/actions/create/createSheet.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 // sheet作成処理の例（エラー処理は省略）
 interface CreateSheetParams {

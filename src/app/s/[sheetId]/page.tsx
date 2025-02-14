@@ -3,9 +3,9 @@ import Sheet from "../components/sheet";
 import getSheets from "@/data/getSheets";
 import Toolbar from "../components/toolbar";
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth-options";
 
 interface SheetPageProps {
   params: Promise<{ sheetId: string }>

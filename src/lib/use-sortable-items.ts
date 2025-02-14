@@ -1,5 +1,8 @@
 // @/lib/use-sortable-items.ts
+"use client";
+
 import { useState } from "react";
+import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
 export default function useSortableItems<T extends { id: string }>(
   initialItems: T[],
@@ -9,13 +12,13 @@ export default function useSortableItems<T extends { id: string }>(
   const [items, setItems] = useState<T[]>(initialItems);
   const [activeItem, setActiveItem] = useState<T | null>(null);
 
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
     const activeId = event.active.id;
     const active = items.find((item) => item.id === activeId);
     setActiveItem(active || null);
   };
 
-  const handleDragEnd = async (event: any) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) {
       setActiveItem(null);

@@ -9,13 +9,6 @@ import Cell from "./cell";
 import updateOrder from "@/actions/update/update-order";
 import useSortableItems from "@/lib/use-sortable-items";
 
-interface Row {
-  id: string;
-  rowName: string;
-  rowOrder: number;
-  // 他の必要なフィールドがあればここに追加
-}
-
 interface RowHeadersProps {
   rows: Row[];
 }

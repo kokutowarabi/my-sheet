@@ -1,5 +1,5 @@
 // @/data/getColumns.ts
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 export default async function getColumns(sheetId: string): Promise<Column[]> {
   const { data, error } = await supabase

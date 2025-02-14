@@ -1,11 +1,11 @@
 import SignOutButton from "@/app/s/[sheetId]/sign-out";
 import getUser from "@/data/getUser";
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import getSheets from "@/data/getSheets";
 import Link from "next/link";
+import { authOptions } from "@/lib/auth-options";
 
 interface UserPageProps {
   params: Promise<{ userId: string }>

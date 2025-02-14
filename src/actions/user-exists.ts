@@ -1,7 +1,7 @@
 // @/actions/userExists.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 /**
  * 指定したユーザーIDのユーザーが存在するかどうかを返す

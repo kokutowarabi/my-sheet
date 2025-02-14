@@ -1,7 +1,7 @@
 // @/actions/updateCell.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 interface UpdateCellParams {
   cellId: string;

@@ -1,7 +1,7 @@
 // @/actions/updateColumn.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 interface UpdateColumnParams {
   columnId: string;

@@ -1,7 +1,7 @@
 // @/actions/create/createUser.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 import userExists from "../user-exists";
 
 interface createUserParams {

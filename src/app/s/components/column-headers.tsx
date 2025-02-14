@@ -9,13 +9,6 @@ import Cell from "./cell"; // 元の Cell コンポーネント
 import updateOrder from "@/actions/update/update-order";
 import useSortableItems from "@/lib/use-sortable-items";
 
-interface Column {
-  id: string;
-  columnName: string;
-  columnOrder: number;
-  // 他の必要なフィールドがあれば追加
-}
-
 interface ColumnHeadersProps {
   columns: Column[];
 }

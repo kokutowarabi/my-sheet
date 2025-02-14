@@ -1,7 +1,7 @@
 // @/actions/update/update-row-order.ts
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 export interface RowOrder {
   id: string;

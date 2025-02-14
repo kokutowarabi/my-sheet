@@ -1,5 +1,5 @@
 // @/data/getCells.ts
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase-client";
 
 export default async function getCells(sheetId: string): Promise<Cell[]> {
   const { data, error } = await supabase

@@ -62,7 +62,7 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
     }
   };
 
-  const handleBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = async () => {
     await upsertData();
     if (onFinishEditing) {
       onFinishEditing();
