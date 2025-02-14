@@ -174,24 +174,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      transaction_create_sheet_data: {
-        Args: {
-          user_id: string
-          sheet_name?: string
-          column_names?: string[]
-          row_names?: string[]
-        }
-        Returns: undefined
-      }
-      transaction_create_sheet_data02: {
-        Args: {
-          userid: string
-          sheetname?: string
-          columnnames?: string[]
-          rownames?: string[]
-        }
-        Returns: undefined
-      }
       transaction_create_sheet_data03: {
         Args: {
           userid: string
@@ -328,6 +310,12 @@ export type Database = {
         Returns: string
       }
       update_column_order: {
+        Args: {
+          updates: Json
+        }
+        Returns: undefined
+      }
+      update_row_order: {
         Args: {
           updates: Json
         }

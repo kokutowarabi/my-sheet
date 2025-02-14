@@ -2,9 +2,9 @@
 'use client';
 
 import React, { useState, forwardRef } from "react";
-import updateColumn from "@/actions/update/updateColumn";
-import updateRow from "@/actions/update/updateRow";
-import updateCell from "@/actions/update/updateCell";
+import updateColumn from "@/actions/update/update-column";
+import updateRow from "@/actions/update/update-row";
+import updateCell from "@/actions/update/update-cell";
 
 export interface CellInputProps {
   columnId?: string;

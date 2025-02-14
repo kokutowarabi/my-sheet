@@ -1,6 +1,6 @@
 // @/app/api/auth/[...nextauth]/route.ts
-import createUser from "@/actions/create/createUser";
-import createSheet from "@/actions/create/createSheet";
+import createUser from "@/actions/create/create-user";
+import createSheet from "@/actions/create/create-sheet";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 

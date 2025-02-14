@@ -2,7 +2,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabaseClient";
-import userExists from "../userExists";
+import userExists from "../user-exists";
 
 interface createUserParams {
   userId: string;

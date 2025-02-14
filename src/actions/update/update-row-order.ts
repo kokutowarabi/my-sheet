@@ -1,28 +1,30 @@
-// /app/actions/update-row-order.ts
+// @/actions/update/update-row-order.ts
 "use server";
 
 import { supabase } from "@/lib/supabaseClient";
 
-interface RowOrder {
+export interface RowOrder {
   id: string;
   order: number;
-  name: string;
 }
 
-export default async function updateRowOrder(rowOrders: RowOrder[]) {
+export default async function updateRowOrder(rowOrders: RowOrder[]): Promise<void> {
+  // 更新用のオブジェクトを作成
+  // SQL関数では各更新の値として { rowOrder: 数値 } を期待しているため、
+  // デバッグ用の name は除外して、order を rowOrder に変換する
   console.log(rowOrders);
-  // const updates = Object.fromEntries(
-  //   columns.map(({ id, order }) => [id, { order }])
-  // );
+  const updates: { [key: string]: { rowOrder: number } } = Object.fromEntries(
+    rowOrders.map(({ id, order }) => [id, { rowOrder: order }])
+  );
 
-  // const { error } = await supabase.rpc("update_column_order", {
-  //   updates: updates,
-  // });
+  const { error } = await supabase.rpc("update_row_order", {
+    updates,
+  });
 
-  // if (error) {
-  //   console.error("❌ updateColumnOrder error:", error);
-  //   throw new Error(`カラムの順序更新に失敗しました: ${error.message}`);
-  // }
+  if (error) {
+    console.error("❌ updateRowOrder error:", error);
+    throw new Error(`カラムの順序更新に失敗しました: ${error.message}`);
+  }
 
-  // console.log("✅ Column order updated successfully!");
+  console.log("✅ Row order updated successfully!");  
 }
