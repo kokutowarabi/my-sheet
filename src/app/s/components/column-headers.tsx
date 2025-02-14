@@ -41,7 +41,7 @@ export default function ColumnHeaders({ columns: initialColumns }: ColumnHeaders
       <DragOverlay>
         {activeColumn ? (
           <div className="border-l border-l-gray-400/80">
-            <Cell columnId={activeColumn.id} value={activeColumn.columnName} variant="columnHeader" />
+            <Cell columnId={`overlay-${activeColumn.id}`} value={activeColumn.columnName} variant="columnHeader" />
           </div>
         ) : null}
       </DragOverlay>

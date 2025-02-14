@@ -79,7 +79,7 @@ export default function RowHeaders({ rows: initialRows }: RowHeadersProps) {
       <DragOverlay>
         {activeRow ? (
           <div className="border-l border-l-gray-400/80">
-            <Cell rowId={activeRow.id} value={activeRow.rowName} variant="rowHeader" />
+            <Cell rowId={`overlay-${activeRow.id}`} value={activeRow.rowName} variant="rowHeader" />
           </div>
         ) : null}
       </DragOverlay>
