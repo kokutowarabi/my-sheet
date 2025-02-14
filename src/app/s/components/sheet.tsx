@@ -1,7 +1,7 @@
 // @/app/s/components/sheet.tsx
 import CornerCell from "./corner-cell";
-import ColumnHeaderCells from "./column-headers";
-import RowHeaderCells from "./row-headers";
+import ColumnHeaders from "./column-headers";
+import RowHeaders from "./row-headers";
 import BodyCells from "./body-cells";
 
 import { CELL_WIDTH, CORNER_SIDE } from "@/lib/constants";
@@ -27,8 +27,8 @@ export default async function Sheet({ sheetId }: SheetProps) {
       className="grid overflow-auto max-w-screen max-h-[calc(100vh-(65px+68px))] hidden-scrollbar"
     >
       <CornerCell />
-      <ColumnHeaderCells columns={columns} />
-      <RowHeaderCells rows={rows} />
+      <ColumnHeaders columns={columns} />
+      <RowHeaders rows={rows} />
       <BodyCells columns={columns} rows={rows} cells={cells} />
     </div>
   );
