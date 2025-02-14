@@ -23,7 +23,7 @@ export default async function UserPage({ params }: UserPageProps) {
     return <main className="flex justify-center items-center min-h-[100svh]">ユーザーが見つかりません。</main>;
   }
 
-  const sheets = await getSheets();
+  const sheets = await getSheets(userId);
 
   return (
     <main className="flex justify-center items-center min-h-[100svh]">
