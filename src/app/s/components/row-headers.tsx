@@ -25,7 +25,7 @@ export default function RowHeaders({ rows: initialRows }: RowHeadersProps) {
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
-    if (!over || active.id === over.id){
+    if (!over || active.id === over.id) {
       setActiveRow(null);
       return;
     }
@@ -43,6 +43,7 @@ export default function RowHeaders({ rows: initialRows }: RowHeadersProps) {
 
   return (
     <DndContext
+      id="row-headers"
       sensors={sensors}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}

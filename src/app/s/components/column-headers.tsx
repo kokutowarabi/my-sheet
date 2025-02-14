@@ -49,6 +49,7 @@ export default function ColumnHeaders({ columns: initialColumns }: ColumnHeaders
 
   return (
     <DndContext
+      id="column-headers"
       sensors={sensors}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}

@@ -11,6 +11,8 @@ interface SortableRowProps {
 export default function SortableRow({ row }: SortableRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: row.id });
 
+  console.log(row.rowName, row.id);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
