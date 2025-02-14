@@ -1,6 +1,10 @@
 // @/app/page.tsx
 
-export default function Home() {
+import Redirect from "@/lib/redirect";
+
+export default async function Home() {
+  await Redirect();
+
   return (
     <main>
     </main>

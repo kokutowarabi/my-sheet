@@ -1,5 +1,6 @@
 'use client';
 
+import SignOutButton from "@/app/s/[sheetId]/sign-out";
 import { useState } from "react";
 
 interface HeaderProps {
@@ -15,6 +16,7 @@ export default function Header({ sheetName: initialSheetName }: HeaderProps) {
       <h1 className="text-2xl font-bold mr-auto">
         <input type="text" value={sheetName} onChange={(e) => setSheetName(e.target.value)} />
       </h1>
+      <SignOutButton />
       <div className="bg-gray-100 rounded-full w-7 aspect-square" />
     </header>
   )

@@ -27,6 +27,9 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
   const [isUpdating, setIsUpdating] = useState(false);
   const [pendingUpdate, setPendingUpdate] = useState<string | null>(null);
 
+  const inputId = cellId || columnId || rowId;
+  const inputName = cellId ? `cell-${cellId}` : columnId ? `column-${columnId}` : `row-${rowId}`;
+
   const updateFunction = async (newValue: string) => {
     if (cellId) {
       return await updateCell({ cellId, newValue });
@@ -81,6 +84,8 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
 
   return (
     <input
+      id={inputId}
+      name={inputName}
       ref={ref}
       className={`w-[80%] h-fit bg-transparent rounded-md py-px px-2 transition cursor-pointer focus:cursor-text focus:bg-white ${isEditing ? "border border-gray-300" : ""}`}
       value={value}

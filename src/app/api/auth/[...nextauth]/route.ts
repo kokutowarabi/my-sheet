@@ -1,12 +1,13 @@
+// @/app/api/auth/[...nextauth]/route.ts
 import createUser from "@/actions/create/createUser";
 import createSheet from "@/actions/create/createSheet";
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   providers: [
     GoogleProvider({
@@ -23,29 +24,33 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    // signIn コールバックでユーザー作成とシート作成を実施し、
-    // 成功した場合はリダイレクト先の URL を返す
-    async signIn({ user }) {
-      const userCreated = await createUser({ userId: user.id, userName: user.name! });
-      console.log("User creation or exists check:", userCreated);
-      if (userCreated) {
+    // サインイン時にユーザーの存在チェックを行い、
+    // 新規ユーザーの場合はシートを作成して sheetId を付与、
+    // 既存ユーザーの場合は sheetId を付与しない
+    async signIn({ user }): Promise<boolean> {
+      // createUser はユーザーが新規作成された場合に true を返し、
+      // 既に存在する場合は false を返すように実装している
+      const isNewUser = await createUser({ userId: user.id, userName: user.name! });
+      console.log("User creation or exists check:", isNewUser);
+
+      if (isNewUser) {
         try {
-          const sheetId = await createSheet({ userId: user.id });
+          const sheetId: string = await createSheet({ userId: user.id });
           console.log("Sheet created with ID:", sheetId);
-          // sheetId を利用してリダイレクト先の URL を返す
-          return `/s/${sheetId}`;
+          // 新規ユーザーの場合のみ、user オブジェクトに sheetId を付与して jwt に反映させる
+          (user as any).sheetId = sheetId;
         } catch (error) {
           console.error("Sheet creation error:", error);
           return false;
         }
       }
-      return false;
+      // 既存ユーザーの場合は sheetId を付与しない
+      return true;
     },
-    // jwt コールバックでユーザー情報を JWT トークンに保存
-    async jwt({ token, user }) {
+    // jwt コールバックで user オブジェクトの情報をトークンに保存
+    async jwt({ token, user }): Promise<any> {
       if (user) {
         token.id = user.id;
-        // ※ 必要に応じて、ここでも sheetId を保存する場合は、user.sheetId があるなら token にセットする
         if ((user as any).sheetId) {
           token.sheetId = (user as any).sheetId;
         }
@@ -53,20 +58,24 @@ const handler = NextAuth({
       console.log("JWT callback token:", token);
       return token;
     },
-    // session コールバックでトークンからセッションに情報をセット
-    async session({ session, token }) {
+    // session コールバックで jwt の情報をセッションに反映
+    async session({ session, token }): Promise<any> {
       if (session.user) {
         session.user.id = token.id as string;
-        (session.user as any).sheetId = token.sheetId as string;
+        if (token.sheetId) {
+          (session.user as any).sheetId = token.sheetId as string;
+        }
       }
       console.log("Session callback:", session);
       return session;
     },
-    // redirect コールバックでは、signIn で返された URL（リダイレクト先）をそのまま返す
-    redirect({ url }) {
-      return url;
-    },
+    // redirect コールバックはここではそのまま渡す（後続のサーバーコンポーネントや Middleware でリダイレクト処理を行う）
+    // redirect({ url }): string {
+    //   return url;
+    // },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

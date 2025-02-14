@@ -2,7 +2,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabaseClient";
-import verifyUser from "../verify/verifyUser";
+import userExists from "../userExists";
 
 interface createUserParams {
   userId: string;
@@ -12,7 +12,7 @@ interface createUserParams {
 export default async function createUser(
   { userId, userName }: createUserParams
 ): Promise<boolean> {
-  if (await verifyUser(userId)) {
+  if (await userExists(userId)) {
     return false;
   }
 

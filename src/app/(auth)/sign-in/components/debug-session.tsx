@@ -2,14 +2,20 @@
 'use client'
 
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function DebugSession() {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
-    console.log("Client-side session:", session);
-  }, [session]);
+    // console.log("Client-side session:", session);
+    if (status === "authenticated" && session?.user?.sheetId) {
+      router.push(`/s/${session.user.sheetId}`);
+    }
+    // }, [session]);
+  }, [status, session, router]);
 
   return (
     <div className="p-4">
