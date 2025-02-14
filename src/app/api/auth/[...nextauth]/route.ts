@@ -31,7 +31,6 @@ export const authOptions: NextAuthOptions = {
       // createUser はユーザーが新規作成された場合に true を返し、
       // 既に存在する場合は false を返すように実装している
       const isNewUser = await createUser({ userId: user.id, userName: user.name! });
-      console.log("User creation or exists check:", isNewUser);
 
       if (isNewUser) {
         try {
@@ -55,7 +54,6 @@ export const authOptions: NextAuthOptions = {
           token.sheetId = (user as any).sheetId;
         }
       }
-      console.log("JWT callback token:", token);
       return token;
     },
     // session コールバックで jwt の情報をセッションに反映
@@ -66,13 +64,8 @@ export const authOptions: NextAuthOptions = {
           (session.user as any).sheetId = token.sheetId as string;
         }
       }
-      console.log("Session callback:", session);
       return session;
     },
-    // redirect コールバックはここではそのまま渡す（後続のサーバーコンポーネントや Middleware でリダイレクト処理を行う）
-    // redirect({ url }): string {
-    //   return url;
-    // },
   },
 };
 

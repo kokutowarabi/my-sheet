@@ -1,7 +1,6 @@
 "use client";
 
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import SortableItem from "./sortable-item";
 import Cell from "./cell"; // 元の Cell コンポーネントを再利用
 
 interface SortableColumnProps {
@@ -9,16 +8,9 @@ interface SortableColumnProps {
 }
 
 export default function SortableColumn({ column }: SortableColumnProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: column.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Cell columnId={column.id} value={column.columnName} variant="columnHeader" />
-    </div>
+    <SortableItem id={column.id} item={column} render={(col) => (
+      <Cell columnId={col.id} value={col.columnName} variant="columnHeader" />
+    )} />
   );
 }
