@@ -10,7 +10,7 @@ interface CreateSheetParams {
 }
 
 export default async function createSheet({ userId, sheetName }: CreateSheetParams): Promise<string> {
-  const { data: sheetId, error } = await supabase.rpc("transaction_create_sheet_data18", {
+  const { data: sheetId, error } = await supabase.rpc("transaction_create_sheet_data", {
     newUserId: userId,
     newSheetName: sheetName ?? "新規シート",
     newColumnNames: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(''),
