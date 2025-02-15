@@ -1,4 +1,6 @@
+'use server';
 import { supabase } from "@/lib/supabase-client"
+import { revalidatePath } from "next/cache";
 
 /**
  * activeセルとoverセルの columnId, rowId を入れ替えて更新する関数
@@ -9,7 +11,7 @@ import { supabase } from "@/lib/supabase-client"
  */
 export const updateCellPositions = async (
   active: Cell,
-  over: Cell
+  over: Cell,
 ): Promise<{ active: Cell; over: Cell } | null> => {
   // activeセルは overセルの位置情報に更新、overセルは activeセルの位置情報に更新
   const [activeUpdate, overUpdate] = await Promise.all([
@@ -42,5 +44,6 @@ export const updateCellPositions = async (
     return null;
   }
 
+  revalidatePath('/');
   return { active: activeUpdate.data, over: overUpdate.data };
 }

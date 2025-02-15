@@ -36,7 +36,7 @@ interface BodyCellsProps {
 const generateInitialCellItems = (
   columns: Column[],
   rows: Row[],
-  cells: Cell[]
+  cells: Cell[],
 ): Cell[] => {
   const totalColumns = columns.length;
   const totalRows = rows.length;
