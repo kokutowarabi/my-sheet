@@ -21,6 +21,7 @@ import {
   type AnimateLayoutChanges,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { updateCellPositions } from "@/actions/update/update-cell-positions";
 
 interface BodyCellsProps {
   columns: Column[];
@@ -143,10 +144,24 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
     setActiveCell(currentCell);
   }, [cellItems]);
 
-  // ドラッグ終了時のハンドラー（swap 状態を反映）
+  // ドラッグ終了時のハンドラー（swap 状態を反映 & Supabase更新）
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
+      const activeCellData = cellItems.find((cell) => cell.id === active.id);
+      const overCellData = cellItems.find((cell) => cell.id === over.id);
+      if (!activeCellData || !overCellData) {
+        setActiveCell(null);
+        return;
+      }
+
+      // Supabase側の更新を実行（active と over の位置情報を入れ替え）
+      const success = updateCellPositions(activeCellData, overCellData);
+      if (!success) {
+        setActiveCell(null);
+        throw new Error("セルの位置情報の更新に失敗しました");
+      }
+
       const oldIndex = cellIndexMap.get(active.id.toString());
       const newIndex = cellIndexMap.get(over.id.toString());
       if (oldIndex === undefined || newIndex === undefined) {
@@ -161,7 +176,7 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
       });
     }
     setActiveCell(null);
-  }, [cellIndexMap]);
+  }, [cellIndexMap, cellItems]);
 
   return (
     <DndContext
