@@ -11,7 +11,6 @@ export interface CellInputProps {
   rowId?: string;
   cellId?: string;
   value: string;
-  isEditing: boolean;
   onFinishEditing?: () => void;
 }
 
@@ -20,7 +19,6 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
   rowId,
   cellId,
   value: initialValue,
-  isEditing,
   onFinishEditing,
 }, ref) => {
   const [value, setValue] = useState(initialValue);
@@ -87,7 +85,7 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
       id={inputId}
       name={inputName}
       ref={ref}
-      className={`w-[80%] h-fit bg-transparent rounded-md py-px px-2 transition cursor-pointer focus:cursor-text focus:bg-white ${isEditing ? "border border-gray-300" : ""}`}
+      className={`w-[80%] h-fit bg-transparent rounded-md py-px px-2 transition cursor-pointer focus:outline-none`}
       value={value}
       onChange={(e) => setValue(e.target.value)}
       onBlur={handleBlur}

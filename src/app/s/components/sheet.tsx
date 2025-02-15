@@ -27,8 +27,8 @@ export default async function Sheet({ sheetId }: SheetProps) {
       className="grid overflow-auto max-w-screen max-h-[calc(100vh-(65px+68px))] hidden-scrollbar"
     >
       <CornerCell />
-      <ColumnHeaders columns={columns} />
-      <RowHeaders rows={rows} />
+      <ColumnHeaders columns={columns} rows={rows} cells={cells} />
+      <RowHeaders columns={columns}rows={rows} cells={cells} />
       <BodyCells columns={columns} rows={rows} cells={cells} />
     </div>
   );

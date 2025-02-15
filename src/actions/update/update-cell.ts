@@ -2,6 +2,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabase-client";
+import { revalidatePath } from "next/cache";
 
 interface UpdateCellParams {
   cellId: string;
@@ -21,5 +22,6 @@ export default async function updateCell({cellId, newValue}: UpdateCellParams): 
 
   console.log("✅ Cell updated successfully!");
 
+  revalidatePath('/');
   return true;
 }

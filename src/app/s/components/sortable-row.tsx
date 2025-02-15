@@ -1,3 +1,4 @@
+// @/components/SortableRow.tsx
 "use client";
 
 import SortableItem from "./sortable-item";
@@ -9,8 +10,17 @@ interface SortableRowProps {
 
 export default function SortableRow({ row }: SortableRowProps) {
   return (
-    <SortableItem id={row.id} item={row} render={(r) => (
-      <Cell rowId={r.id} value={r.rowName} variant="rowHeader" />
-    )} />
+    <SortableItem 
+      id={row.id} 
+      item={row} 
+      render={(r, isDragging) => (
+        <Cell 
+          rowId={r.id} 
+          value={r.rowName} 
+          variant="rowHeader"
+          isGhostCell={isDragging}  // ここで渡す
+        />
+      )} 
+    />
   );
 }

@@ -1,3 +1,4 @@
+// @/components/SortableColumn.tsx
 "use client";
 
 import SortableItem from "./sortable-item";
@@ -9,8 +10,17 @@ interface SortableColumnProps {
 
 export default function SortableColumn({ column }: SortableColumnProps) {
   return (
-    <SortableItem id={column.id} item={column} render={(col) => (
-      <Cell columnId={col.id} value={col.columnName} variant="columnHeader" />
-    )} />
+    <SortableItem 
+      id={column.id} 
+      item={column} 
+      render={(col, isDragging) => (
+        <Cell 
+          columnId={col.id} 
+          value={col.columnName} 
+          variant="columnHeader"
+          isGhostCell={isDragging}  // ここで渡す
+        />
+      )} 
+    />
   );
 }

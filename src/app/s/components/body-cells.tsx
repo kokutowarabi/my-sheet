@@ -1,58 +1,198 @@
 // @/app/s/components/sheet/body-cells.tsx
+'use client'
+
+import { useState, useMemo, useCallback, memo } from "react";
 import { CELL_WIDTH, CELL_HEIGHT } from "@/lib/constants";
 import Cell from "./cell";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragStartEvent,
+  type DragEndEvent,
+  type DragMoveEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSwappingStrategy,
+  useSortable,
+  type AnimateLayoutChanges,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface BodyCellsProps {
   columns: Column[];
   rows: Row[];
-  // cells: 既存セルの配列。各セルには id, value, および columnId, rowId が含まれる
-  cells: {
-    id: string;
-    value: string;
-    columnId: string;
-    rowId: string;
-  }[];
+  cells: Cell[];
 }
 
-export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
-  // 総列数／総行数の計算（columns と rows の長さのみを使用）
+/**
+ * 各グリッド位置に対応するセル情報を生成するユーティリティ関数
+ * 存在しないセルは、空セルとして作成する
+ */
+const generateInitialCellItems = (
+  columns: Column[],
+  rows: Row[],
+  cells: Cell[]
+): Cell[] => {
   const totalColumns = columns.length;
   const totalRows = rows.length;
   const totalCells = totalColumns * totalRows;
+  const items: Cell[] = [];
+
+  for (let index = 0; index < totalCells; index++) {
+    const rowIndex = Math.floor(index / totalColumns);
+    const colIndex = index % totalColumns;
+    const currentColumnId = columns[colIndex]?.id ?? "";
+    const currentRowId = rows[rowIndex]?.id ?? "";
+
+    const found = cells.find(
+      (c) => c.columnId === currentColumnId && c.rowId === currentRowId
+    );
+
+    if (found) {
+      items.push(found);
+    } else {
+      items.push({
+        id: `${currentColumnId}-${currentRowId}`,
+        value: "",
+        columnId: currentColumnId,
+        rowId: currentRowId,
+        createdAt: new Date().toISOString(),
+        sheetId: "",
+      });
+    }
+  }
+  return items;
+};
+
+/**
+ * ソート可能なセルコンポーネントを React.memo でラップし、
+ * 不要な再レンダリングを防ぐ
+ */
+const MemoSortableCell = memo(function SortableCell({ item }: { item: Cell }) {
+  const animateLayoutChanges: AnimateLayoutChanges = () => false;
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: item.id, animateLayoutChanges });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1 : 0,
+  };
 
   return (
-    <div
-      style={{
-        gridTemplateColumns: `repeat(${totalColumns}, ${CELL_WIDTH})`,
-        gridTemplateRows: `repeat(${totalRows}, ${CELL_HEIGHT})`
-      }}
-      className="grid relative z-body-cells"
-    >
-      {Array.from({ length: totalCells }, (_, index) => {
-        // グリッド上の行番号・列番号（0-indexed）を算出
-        const rowIndex = Math.floor(index / totalColumns);
-        const colIndex = index % totalColumns;
-
-        // 既存の列と行の ID を取得（新規列・行の概念を削除）
-        const currentColumnId = columns[colIndex]?.id ?? "";
-        const currentRowId = rows[rowIndex]?.id ?? "";
-
-        // 既存のセルがあるかをチェック
-        const cell = cells.find(
-          (c) => c.columnId === currentColumnId && c.rowId === currentRowId
-        );
-
-        return (
-          <Cell
-            key={cell?.id ?? `${currentColumnId}-${currentRowId}`}
-            cellId={cell?.id ?? `${currentColumnId}-${currentRowId}`}
-            value={cell?.value ?? ""}
-            variant="default"
-            columnId={currentColumnId}
-            rowId={currentRowId}
-          />
-        );
-      })}
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Cell
+        cellId={item.id}
+        value={item.value}
+        variant="default"
+        columnId={item.columnId}
+        rowId={item.rowId}
+        isGhostCell={isDragging}
+      />
     </div>
+  );
+});
+
+export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
+  const totalColumns = columns.length;
+  const totalRows = rows.length;
+
+  // セル情報の状態（更新可能にしている）
+  const [cellItems, setCellItems] = useState<Cell[]>(() =>
+    generateInitialCellItems(columns, rows, cells)
+  );
+
+  // アクティブなセルを管理する状態
+  const [activeCell, setActiveCell] = useState<Cell | null>(null);
+
+  // セルIDからインデックスへのマッピングを memo 化
+  const cellIndexMap = useMemo(() => {
+    const map = new Map<string, number>();
+    cellItems.forEach((item, index) => {
+      map.set(item.id, index);
+    });
+    return map;
+  }, [cellItems]);
+
+  // dnd-kit のセンサー設定
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  // グリッドのスタイル（useMemo でメモ化）
+  const gridStyle = useMemo<React.CSSProperties>(
+    () => ({
+      gridTemplateColumns: `repeat(${totalColumns}, ${CELL_WIDTH})`,
+      gridTemplateRows: `repeat(${totalRows}, ${CELL_HEIGHT})`,
+    }),
+    [totalColumns, totalRows]
+  );
+
+  // イベントハンドラーを useCallback でメモ化
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const { active } = event;
+    const currentCell = cellItems.find((cell) => cell.id === active.id) || null;
+    setActiveCell(currentCell);
+  }, [cellItems]);
+
+  const handleDragMove = useCallback((event: DragMoveEvent) => {
+    const { active } = event;
+    const currentCell = cellItems.find((cell) => cell.id === active.id) || null;
+    setActiveCell(currentCell);
+  }, [cellItems]);
+
+  // ドラッグ終了時のハンドラー（swap 状態を反映）
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = cellIndexMap.get(active.id.toString());
+      const newIndex = cellIndexMap.get(over.id.toString());
+      if (oldIndex === undefined || newIndex === undefined) {
+        setActiveCell(null);
+        return;
+      }
+      setCellItems((prevItems) => {
+        const newItems = [...prevItems];
+        // active セルと over セルの位置を入れ替える（swap）
+        [newItems[oldIndex], newItems[newIndex]] = [newItems[newIndex], newItems[oldIndex]];
+        return newItems;
+      });
+    }
+    setActiveCell(null);
+  }, [cellIndexMap]);
+
+  return (
+    <DndContext
+      id="body-cells"
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={cellItems.map((item) => item.id)}
+        strategy={rectSwappingStrategy}
+      >
+        <div style={gridStyle} className="grid relative z-10">
+          {cellItems.map((item) => (
+            <MemoSortableCell key={item.id} item={item} />
+          ))}
+        </div>
+      </SortableContext>
+      <DragOverlay>
+        {activeCell ? (
+          <Cell
+            cellId={activeCell.id}
+            value={activeCell.value}
+            variant="default"
+            columnId={activeCell.columnId}
+            rowId={activeCell.rowId}
+            isActiveCell
+          />
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }

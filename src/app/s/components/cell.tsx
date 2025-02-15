@@ -38,19 +38,20 @@ const style = (variant: VariantProps<typeof cellVariants>["variant"]) => {
 
 export interface CellProps
   extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof cellVariants> {
+    VariantProps<typeof cellVariants> {
   columnId?: string;
   rowId?: string;
   cellId?: string;
   value?: string;
+  isActiveCell?: boolean;
+  isGhostCell?: boolean;
 }
 
 const Cell = React.forwardRef<HTMLDivElement, CellProps>(
-  ({ columnId, rowId, cellId, value, className, variant, ...props }, ref) => {
+  ({ columnId, rowId, cellId, value, className, variant, isActiveCell, isGhostCell, ...props }, ref) => {
     const [isEditing, setIsEditing] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
-    // セル全体がクリックされたときに、input にフォーカスし、カーソルを末尾に設定
     const handleCellClick = () => {
       if (inputRef.current) {
         inputRef.current.focus();
@@ -60,7 +61,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
       setIsEditing(true);
     };
 
-    // input の blur 時に呼び出され、isEditing を false にする
     const finishEditing = () => {
       setIsEditing(false);
     };
@@ -68,6 +68,11 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
     if (!variant) {
       return null;
     }
+
+    const activeCellClass = isActiveCell ? 'shadow-lg border-t border-l' : "";
+    const ghostCellClass = isGhostCell ? 'bg-gray-100/50 text-gray-400 ring-4 border-none' : "";
+    
+    const cellClass = cn(cellVariants({ variant, className }), activeCellClass, ghostCellClass);
 
     if (value === undefined || variant === "corner") {
       return (
@@ -84,7 +89,7 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
     return (
       <div
         ref={ref}
-        className={cn(cellVariants({ variant, className }))}
+        className={cellClass}
         style={style(variant)}
         onClick={handleCellClick}
         {...props}
@@ -94,7 +99,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
             ref={inputRef}
             columnId={columnId}
             value={value}
-            isEditing={isEditing}
             onFinishEditing={finishEditing}
           />
         )}
@@ -103,7 +107,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
             ref={inputRef}
             rowId={rowId}
             value={value}
-            isEditing={isEditing}
             onFinishEditing={finishEditing}
           />
         )}
@@ -114,7 +117,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
             rowId={rowId}
             cellId={cellId}
             value={value}
-            isEditing={isEditing}
             onFinishEditing={finishEditing}
           />
         )}

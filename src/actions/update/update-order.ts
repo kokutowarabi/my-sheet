@@ -2,6 +2,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabase-client";
+import { revalidatePath } from "next/cache";
 
 export interface Order {
   id: string;
@@ -42,4 +43,5 @@ export default async function updateOrder(type: OrderType, orders: Order[]): Pro
   }
 
   console.log(`✅ ${type} order updated successfully!`);
+  revalidatePath("/");
 }
