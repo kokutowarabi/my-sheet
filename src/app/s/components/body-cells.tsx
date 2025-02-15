@@ -190,7 +190,7 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
         items={cellItems.map((item) => item.id)}
         strategy={rectSwappingStrategy}
       >
-        <div style={gridStyle} className="grid relative z-10">
+        <div style={gridStyle} className="grid">
           {cellItems.map((item) => (
             <MemoSortableCell key={item.id} item={item} />
           ))}
