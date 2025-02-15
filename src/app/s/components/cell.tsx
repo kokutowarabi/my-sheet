@@ -49,7 +49,6 @@ export interface CellProps
 
 const Cell = React.forwardRef<HTMLDivElement, CellProps>(
   ({ columnId, rowId, cellId, value, className, variant, isActiveCell, isGhostCell, ...props }, ref) => {
-    const [isEditing, setIsEditing] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handleCellClick = () => {
@@ -58,11 +57,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
         const len = inputRef.current.value.length;
         inputRef.current.setSelectionRange(len, len);
       }
-      setIsEditing(true);
-    };
-
-    const finishEditing = () => {
-      setIsEditing(false);
     };
 
     if (!variant) {
@@ -99,7 +93,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
             ref={inputRef}
             columnId={columnId}
             value={value}
-            onFinishEditing={finishEditing}
           />
         )}
         {variant === "rowHeader" && (
@@ -107,7 +100,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
             ref={inputRef}
             rowId={rowId}
             value={value}
-            onFinishEditing={finishEditing}
           />
         )}
         {variant === "default" && (
@@ -117,7 +109,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
             rowId={rowId}
             cellId={cellId}
             value={value}
-            onFinishEditing={finishEditing}
           />
         )}
       </div>
