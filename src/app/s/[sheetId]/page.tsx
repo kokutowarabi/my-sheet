@@ -1,7 +1,6 @@
 import Header from "../../../components/header";
 import Sheet from "../components/sheet";
 import getSheets from "@/data/getSheets";
-import Toolbar from "../components/toolbar";
 
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

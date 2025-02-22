@@ -27,7 +27,6 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
   const [pendingUpdate, setPendingUpdate] = useState<string | null>(null);
 
   // ここでは dnd の activationConstraint により、短いクリックなら編集ができる
-  const { activeDragId, activeHeaderDrag } = useDragStore();
   const isEditingDisabled = false; // 入力自体は常に編集可能（ただしドラッグが発生した場合は dnd が起動します）
 
   const inputId = cellId || columnId || rowId;
