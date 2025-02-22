@@ -5,7 +5,6 @@ import React, { useState, forwardRef } from "react";
 import updateColumn from "@/actions/update/update-column";
 import updateRow from "@/actions/update/update-row";
 import updateCell from "@/actions/update/update-cell";
-import useDragStore from "@/stores/use-drag-store";
 
 export interface CellInputProps {
   columnId?: string;
