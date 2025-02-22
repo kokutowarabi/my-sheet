@@ -7,16 +7,15 @@ import { revalidatePath } from "next/cache";
 export interface Order {
   id: string;
   order: number;
-  name?: string; // デバッグ用。データベース更新には不要
 }
 
 export type OrderType = "column" | "row";
 
 /**
  * カラムまたは行の順序を更新する共通関数
- * 
+ *
  * @param type 更新対象の種別 ("column" なら columns テーブルの columnOrder、"row" なら rows テーブルの rowOrder)
- * @param orders 更新する順序情報の配列
+ * @param orders 更新する順序情報の配列。activeな項目の場合は、oldId と newId が含まれる
  */
 export default async function updateOrder(type: OrderType, orders: Order[]): Promise<void> {
   // 対象テーブル名と更新対象のフィールド名を決定
@@ -24,8 +23,6 @@ export default async function updateOrder(type: OrderType, orders: Order[]): Pro
   const orderField = type === "column" ? "columnOrder" : "rowOrder";
 
   // 更新用のオブジェクトを作成
-  // 例: { "uuid-1": { columnOrder: 1 }, "uuid-2": { columnOrder: 2 } } または
-  //     { "uuid-3": { rowOrder: 1 }, "uuid-4": { rowOrder: 2 } }
   const updates: { [key: string]: { [key: string]: number } } = Object.fromEntries(
     orders.map(({ id, order }) => [id, { [orderField]: order }])
   );
@@ -43,5 +40,6 @@ export default async function updateOrder(type: OrderType, orders: Order[]): Pro
   }
 
   console.log(`✅ ${type} order updated successfully!`);
+
   revalidatePath("/");
 }

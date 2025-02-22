@@ -14,6 +14,10 @@ interface SheetProps {
   sheetId: string;
 }
 
+const HEADER_HEIGHT = 65;
+// const TOOLBAR_HEIGHT = 68;
+const TOOLBAR_HEIGHT = 0;
+
 export default async function Sheet({ sheetId }: SheetProps) {
   const columns = await getColumns(sheetId);
   const rows = await getRows(sheetId);
@@ -22,9 +26,10 @@ export default async function Sheet({ sheetId }: SheetProps) {
   return (
     <div
       style={{
-        gridTemplate: `${CORNER_SIDE} 1fr / ${CELL_WIDTH} 1fr`,
+        gridTemplate: `${CORNER_SIDE}px 1fr / ${CELL_WIDTH}px 1fr`,
+        maxHeight: `calc(100svh - (${HEADER_HEIGHT}px + ${TOOLBAR_HEIGHT}px))`,
       }}
-      className="grid overflow-auto max-w-screen max-h-[calc(100vh-(65px+68px))] hidden-scrollbar"
+      className="grid overflow-auto max-w-screen hidden-scrollbar"
     >
       <CornerCell />
       <ColumnHeaders columns={columns} rows={rows} cells={cells} />

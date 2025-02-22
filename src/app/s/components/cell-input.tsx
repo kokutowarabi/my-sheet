@@ -5,6 +5,7 @@ import React, { useState, forwardRef } from "react";
 import updateColumn from "@/actions/update/update-column";
 import updateRow from "@/actions/update/update-row";
 import updateCell from "@/actions/update/update-cell";
+import useDragStore from "@/stores/use-drag-store";
 
 export interface CellInputProps {
   columnId?: string;
@@ -24,6 +25,10 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
   const [value, setValue] = useState(initialValue);
   const [isUpdating, setIsUpdating] = useState(false);
   const [pendingUpdate, setPendingUpdate] = useState<string | null>(null);
+
+  // ここでは dnd の activationConstraint により、短いクリックなら編集ができる
+  const { activeDragId, activeHeaderDrag } = useDragStore();
+  const isEditingDisabled = false; // 入力自体は常に編集可能（ただしドラッグが発生した場合は dnd が起動します）
 
   const inputId = cellId || columnId || rowId;
   const inputName = cellId ? `cell-${cellId}` : columnId ? `column-${columnId}` : `row-${rowId}`;
@@ -75,7 +80,6 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    // カーソルを常にテキストの最後尾に移動
     const len = e.target.value.length;
     e.target.setSelectionRange(len, len);
   };
@@ -85,8 +89,9 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
       id={inputId}
       name={inputName}
       ref={ref}
-      className={`w-[80%] h-fit bg-transparent rounded-md py-px px-2 transition cursor-pointer focus:outline-none`}
+      className="w-[80%] h-fit bg-transparent rounded-md py-px px-2 transition cursor-pointer focus:outline-none"
       value={value}
+      disabled={isEditingDisabled}
       onChange={(e) => setValue(e.target.value)}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}

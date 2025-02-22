@@ -7,14 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import CellInput from "./cell-input";
 
 const cellVariants = cva(
-  "border-r border-b flex justify-center items-center bg-white",
+  'border-r border-b flex justify-center items-center bg-white',
   {
     variants: {
       variant: {
-        default: "cursor-pointer border-gray-300 hover:bg-gray-100",
+        default: "cursor-pointer border-gray-300",
         corner: 'sticky top-0 left-0 z-corner-cell border-t border-l border-gray-400/80 bg-gray-100',
-        columnHeader: "cursor-pointer border-t border-gray-400/80 bg-gray-100 hover:bg-gray-300",
-        rowHeader: "cursor-pointer border-l border-gray-400/80 bg-gray-100 hover:bg-gray-300",
+        columnHeader: "cursor-pointer border-t border-gray-400/80 bg-gray-100",
+        rowHeader: "cursor-pointer border-l border-gray-400/80 bg-gray-100",
       },
     },
     defaultVariants: {
@@ -26,29 +26,55 @@ const cellVariants = cva(
 const style = (variant: VariantProps<typeof cellVariants>["variant"]) => {
   switch (variant) {
     case "corner":
-      return { width: CELL_WIDTH, height: CORNER_SIDE };
+      return { minWidth: `${CELL_WIDTH}px`, minHeight: `${CORNER_SIDE}px` };
     case "rowHeader":
-      return { width: CELL_WIDTH, height: CELL_HEIGHT };
+      return { minWidth: `${CELL_WIDTH}px`, minHeight: `${CELL_HEIGHT}px` };
     case "columnHeader":
-      return { width: CELL_WIDTH, height: CORNER_SIDE };
+      return { minWidth: `${CELL_WIDTH}px`, minHeight: `${CORNER_SIDE}px` };
     default:
-      return { width: CELL_WIDTH, height: CELL_HEIGHT };
+      return { minWidth: `${CELL_WIDTH}px`, minHeight: `${CELL_HEIGHT}px` };
   }
 };
 
 export interface CellProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cellVariants> {
+  VariantProps<typeof cellVariants> {
   columnId?: string;
   rowId?: string;
   cellId?: string;
   value?: string;
   isActiveCell?: boolean;
+
+  isDragOverlayHeader?: boolean;
+  isDragOverlayHeaderCell?: boolean;
+
   isGhostCell?: boolean;
+
+  isGhostHeader?: boolean;
+  isGhostHeaderCell?: boolean;
 }
 
 const Cell = React.forwardRef<HTMLDivElement, CellProps>(
-  ({ columnId, rowId, cellId, value, className, variant, isActiveCell, isGhostCell, ...props }, ref) => {
+  ({
+    columnId,
+    rowId,
+    cellId,
+    value,
+    className,
+    variant,
+
+    isActiveCell,
+
+    isDragOverlayHeader,
+    isDragOverlayHeaderCell,
+
+    isGhostCell,
+
+    isGhostHeader,
+    isGhostHeaderCell,
+
+    ...props
+  }, ref) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handleCellClick = () => {
@@ -64,9 +90,43 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
     }
 
     const activeCellClass = isActiveCell ? 'shadow-lg border-t border-l' : "";
-    const ghostCellClass = isGhostCell ? 'bg-gray-100/50 text-gray-400 ring-4 border-none' : "";
-    
-    const cellClass = cn(cellVariants({ variant, className }), activeCellClass, ghostCellClass);
+
+    const dragOverlayHeaderClass = isDragOverlayHeader || isDragOverlayHeaderCell ? 'border-l shadow-lg' : "";
+
+    const ghostCellClass = isGhostCell ? 'bg-gray-100/50 text-gray-400' : "";
+
+    const ghostHeaderClass = isGhostHeader ? 'border-x-2 border-x-blue-500 border-t-2 border-t-blue-500' : "";
+    const ghostHeaderCellClass = isGhostHeaderCell
+      ? 'border-x-2 border-x-blue-500 last:border-b-2 last:border-b-blue-500'
+      : "";
+
+    // セルがホバー状態でない場合の条件をまとめる
+    const shouldDisableHover =
+      isActiveCell ||
+      isDragOverlayHeader ||
+      isDragOverlayHeaderCell ||
+      isGhostCell ||
+      isGhostHeader ||
+      isGhostHeaderCell;
+
+    // セルの variant に応じたホバー時の背景色のクラスを決定する
+    const hoverBgClass =
+      variant === 'default'
+        ? 'hover:bg-gray-100'
+        : 'hover:bg-gray-300';
+
+    // 上記条件に基づいて、ホバー時のクラスを適用するかどうか決定
+    const hoverClass = shouldDisableHover ? '' : hoverBgClass;
+
+    const cellClass =
+      cn(cellVariants({ variant, className }),
+        activeCellClass,
+        dragOverlayHeaderClass,
+        ghostCellClass,
+        ghostHeaderClass,
+        ghostHeaderCellClass,
+        hoverClass
+      );
 
     if (value === undefined || variant === "corner") {
       return (

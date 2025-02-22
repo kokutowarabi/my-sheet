@@ -1,4 +1,3 @@
-// @/components/SortableItem.tsx
 "use client";
 
 import { useSortable } from "@dnd-kit/sortable";
@@ -11,14 +10,14 @@ interface SortableItemProps<T> {
 }
 
 export default function SortableItem<T>({ id, item, render }: SortableItemProps<T>) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({ id });
+
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="transition-transform duration-200 ease">
       {render(item, isDragging)}
     </div>
   );

@@ -1,8 +1,7 @@
-// @/components/SortableRow.tsx
 "use client";
 
 import SortableItem from "./sortable-item";
-import Cell from "./cell"; // 元の Cell コンポーネントを再利用
+import Cell from "./cell";
 
 interface SortableRowProps {
   row: Row;
@@ -18,7 +17,7 @@ export default function SortableRow({ row }: SortableRowProps) {
           rowId={r.id} 
           value={r.rowName} 
           variant="rowHeader"
-          isGhostCell={isDragging}  // ここで渡す
+          isGhostCell={isDragging}
         />
       )} 
     />

@@ -19,7 +19,7 @@ export default async function Home() {
     <main className="flex justify-center items-center min-h-[100svh] gap-10">
       <Link className="hover:underline" href={`/u/${userId}`}>プロフィール</Link>
       {sheets.map((sheet) => (
-        <Link className="hover:underline" href={`/s/${sheet.id}`}>シート</Link>
+        <Link key={sheet.id} className="hover:underline" href={`/s/${sheet.id}`}>シート</Link>
       ))}
     </main>
   );

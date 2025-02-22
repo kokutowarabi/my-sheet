@@ -1,13 +1,26 @@
-// @/lib/use-sortable-items.ts
 "use client";
 
 import { useState } from "react";
 import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
-export default function useSortableItems<T extends { id: string }>(
+interface ChangedItem {
+  id: string;
+  order: number;
+}
+
+/**
+ * ソート可能なアイテムの状態管理フック
+ * @param initialItems 初期アイテム配列
+ * @param updateFn 順序変更があった場合に呼び出す更新関数
+ * @param orderKey 順序を示すプロパティ名（例: 'columnOrder' または 'rowOrder'）
+ */
+export default function useSortableItems<
+  K extends string,
+  T extends { id: string } & Record<K, number>
+>(
   initialItems: T[],
-  updateFn: (changedItems: { id: string; order: number; name: string }[]) => Promise<void>,
-  getName: (item: T) => string
+  updateFn: (changedItems: ChangedItem[]) => Promise<void>,
+  orderKey: K
 ) {
   const [items, setItems] = useState<T[]>(initialItems);
   const [activeItem, setActiveItem] = useState<T | null>(null);
@@ -24,32 +37,41 @@ export default function useSortableItems<T extends { id: string }>(
       setActiveItem(null);
       return;
     }
-
+    
+    // ドラッグ前の順序を保持
     const prevOrder = [...items];
+    // active と over のインデックスを取得
     const oldIndex = prevOrder.findIndex((item) => item.id === active.id);
     const newIndex = prevOrder.findIndex((item) => item.id === over.id);
 
+    // 新しい順序を生成
     const newOrder = [...prevOrder];
     const [movedItem] = newOrder.splice(oldIndex, 1);
     newOrder.splice(newIndex, 0, movedItem);
 
-    setItems(newOrder);
-    setActiveItem(null);
+    // 新しい順序に従って各アイテムの orderKey を更新
+    const updatedOrder = newOrder.map((item, index) => ({
+      ...item,
+      [orderKey]: index,
+    }));
 
-    // 位置が変化したアイテムのみ抽出
-    const changedItems = newOrder.reduce((acc, item, idx) => {
-      const prevIdx = prevOrder.findIndex((prevItem) => prevItem.id === item.id);
-      if (prevIdx !== idx) {
-        acc.push({
+    // 変更があったアイテムのみ抽出
+    const changedItems: ChangedItem[] = [];
+    updatedOrder.forEach((item, index) => {
+      const prevItem = prevOrder.find(prev => prev.id === item.id);
+      if (prevItem && prevItem[orderKey] !== index) {
+        changedItems.push({
           id: item.id,
-          order: idx,
-          name: getName(item),
+          order: index,
         });
       }
-      return acc;
-    }, [] as { id: string; order: number; name: string }[]);
+    });
 
-    await updateFn(changedItems);
+    setItems(updatedOrder);
+    setActiveItem(null);
+    if (changedItems.length > 0) {
+      await updateFn(changedItems);
+    }
   };
 
   return { items, setItems, activeItem, handleDragStart, handleDragEnd };

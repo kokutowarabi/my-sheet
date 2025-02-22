@@ -1,13 +1,24 @@
-// @/components/RowHeaders.ts
-"use client";
+'use client'
 
-import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useState, useEffect } from "react";
+import {
+  DndContext,
+  DragOverlay,
+  DragStartEvent,
+  DragOverEvent,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import SortableRow from "./sortable-row"; // カスタムソート可能な行コンポーネント
-import Cell from "./cell";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import updateOrder from "@/actions/update/update-order";
 import useSortableItems from "@/lib/use-sortable-items";
+import useDragStore, { OverRow } from "@/stores/use-drag-store";
+import Cell from "./cell";
+import SortableRow from "./sortable-row";
+import { CELL_HEIGHT } from "@/lib/constants";
 
 interface RowHeadersProps {
   columns: Column[];
@@ -16,49 +27,166 @@ interface RowHeadersProps {
 }
 
 export default function RowHeaders({ columns, rows: initialRows, cells }: RowHeadersProps) {
-  // updateOrder を利用して行の順序更新を行うためのラッパー関数
-  const updateRowOrder = async (changedItems: { id: string; order: number; name: string }[]) => {
+  const { setOverRows, setActiveHeaderDrag, overRows } = useDragStore();
+
+  const updateRowOrder = async (changedItems: { id: string; order: number }[]) => {
     await updateOrder("row", changedItems);
   };
 
   const { items: rows, activeItem: activeRow, handleDragStart, handleDragEnd } =
-    useSortableItems(initialRows, updateRowOrder, (row) => row.rowName);
+    useSortableItems(initialRows, updateRowOrder, "rowOrder");
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
+  );
+
+  // ドラッグ開始時の rowOrder とドラッグ中の相対的な変位を計算するためのローカルステート
+  const [initialRowOrder, setInitialRowOrder] = useState<number | null>(null);
+  const [localDiff, setLocalDiff] = useState<number>(0);
+
+  useEffect(() => {
+    setOverRows([]);
+    setLocalDiff(0);
+    setInitialRowOrder(null);
+  }, [rows, setOverRows]);
+
+  useEffect(() => {
+    if (activeRow && initialRowOrder !== null) {
+      const newDiff = overRows.length > 0
+        ? (overRows[overRows.length - 1].rowOrder - initialRowOrder) * CELL_HEIGHT
+        : 0;
+      setLocalDiff(newDiff);
+    } else {
+      setLocalDiff(0);
+    }
+  }, [activeRow, initialRowOrder, overRows]);
+
+  const onDragStart = (event: DragStartEvent) => {
+    setOverRows([]);
+    setLocalDiff(0);
+    setInitialRowOrder(null);
+
+    handleDragStart(event);
+    const { active } = event;
+    const currentActiveRow = rows.find((row) => row.id === active.id);
+    if (currentActiveRow) {
+      setInitialRowOrder(currentActiveRow.rowOrder);
+    }
+    setActiveHeaderDrag({ type: "row", id: active.id.toString() });
+  };
+
+  const onDragOver = (event: DragOverEvent) => {
+    const { over } = event;
+    if (!over || !activeRow) return;
+    const overRow = rows.find((row) => row.id === over.id);
+    if (!overRow) return;
+
+    setOverRows((prev: OverRow[]) => {
+      if (prev.length > 0) {
+        const firstDiff = prev[0].rowOrder - (initialRowOrder ?? 0);
+        const currentDiff = overRow.rowOrder - (initialRowOrder ?? 0);
+        if (firstDiff !== 0 && Math.sign(firstDiff) !== Math.sign(currentDiff)) {
+          return [{ id: over.id.toString(), rowOrder: overRow.rowOrder }];
+        }
+      }
+      const index = prev.findIndex((o) => o.id === over.id.toString());
+      if (index === -1) {
+        return [...prev, { id: over.id.toString(), rowOrder: overRow.rowOrder }];
+      } else {
+        return prev.slice(0, index + 1);
+      }
+    });
+  };
+
+  const onDragEnd = (event: DragEndEvent) => {
+    handleDragEnd(event);
+    setActiveHeaderDrag(null);
+    setOverRows([]);
+    setLocalDiff(0);
+    setInitialRowOrder(null);
+  };
+
+  // activeRow 用の transform（ドラッグ中の行の位置補正用）
+  const activeStyle = { transform: `translateY(${localDiff}px)` };
+  const overStyle = localDiff > 0
+    ? { transform: `translateY(${-CELL_HEIGHT}px)` }
+    : { transform: `translateY(${CELL_HEIGHT}px)` };
+
+  // activeRow または overRows に含まれる場合、cell コンテナに適用する transform を返す
+  const getRowStyle = (row: Row): { transform?: string } => {
+    if (activeRow && row.id === activeRow.id) return activeStyle;
+    if (overRows.some((o) => o.id === row.id)) return overStyle;
+    return {};
+  };
+
+  const getSortedCells = (rowId: string): Cell[] => {
+    return cells
+      .filter((cell) => cell.rowId === rowId)
+      .sort((a, b) => {
+        const colA = columns.find((col) => col.id === a.columnId);
+        const colB = columns.find((col) => col.id === b.columnId);
+        return (colA?.columnOrder ?? 0) - (colB?.columnOrder ?? 0);
+      });
+  };
 
   return (
     <DndContext
       id="row-headers"
       sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
       modifiers={[restrictToVerticalAxis]}
     >
       <SortableContext items={rows.map((row) => row.id)} strategy={verticalListSortingStrategy}>
         <div className="sticky left-0 z-row-headers">
           {rows.map((row) => (
-            <SortableRow key={row.id} row={row} />
+            <div key={row.id} className="flex">
+              {/* row header（Sticky などのスタイルは SortableRow 内で管理） */}
+              <SortableRow row={row} />
+              {/* 対応する cell コンテナにのみ transform スタイルを適用 */}
+              {activeRow && (
+                <div className="flex transition-transform duration-200" style={getRowStyle(row)}>
+                {getSortedCells(row.id).map((cell) => (
+                  <Cell
+                    key={cell.id}
+                    cellId={cell.id}
+                    value={cell.value}
+                    variant="default"
+                    columnId={cell.columnId}
+                    rowId={cell.rowId}
+                  />
+                ))}
+              </div>
+              )}
+            </div>
           ))}
         </div>
       </SortableContext>
-
       <DragOverlay>
-        {activeRow ? (
-          <div className="border-l border-l-gray-400/80 flex min-w-fit">
-            <Cell rowId={`overlay-${activeRow.id}`} value={activeRow.rowName} variant="rowHeader" />
-            {cells
-              .filter((cell) => cell.rowId === activeRow.id)
-              .sort((a, b) => {
-                const colA = columns.find((col) => col.id === a.columnId);
-                const colB = columns.find((col) => col.id === b.columnId);
-                // 見つからなければ 0 を返す（同じ順序とみなす）
-                return (colA?.columnOrder ?? 0) - (colB?.columnOrder ?? 0);
-              })
-              .map((cell) => (
-                <Cell key={cell.id} rowId={cell.rowId} value={cell.value} variant="default" />
+        {activeRow && (
+          <div key={activeRow.id} className="scale-[.99] flex">
+            <Cell
+              rowId={`overlay-${activeRow.id}`}
+              value={activeRow.rowName}
+              variant="rowHeader"
+              isDragOverlayHeader
+            />
+            <div className="flex">
+              {getSortedCells(activeRow.id).map((cell) => (
+                <Cell
+                  key={cell.id}
+                  cellId={cell.id}
+                  value={cell.value}
+                  variant="default"
+                  columnId={cell.columnId}
+                  rowId={cell.rowId}
+                  isDragOverlayHeaderCell
+                />
               ))}
+            </div>
           </div>
-        ) : null}
+        )}
       </DragOverlay>
     </DndContext>
   );
