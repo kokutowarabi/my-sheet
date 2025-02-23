@@ -5,6 +5,13 @@ import { House } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 interface HeaderProps {
   sheetName: string;
 }
@@ -25,10 +32,26 @@ export default function Header({ sheetName: initialSheetName }: HeaderProps) {
         />
       </h1>
       <div className="flex items-center gap-4">
-        <SignOutButton />
-        <Link href="/">
-          <House className="w-6 h-6 text-white" />
-        </Link>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger>
+              <SignOutButton />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>サインアウト</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <Link href="/">
+                <House className="w-6 h-6 text-white" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>ホーム画面に戻る</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <div className="bg-pink-200 rounded-full w-7 aspect-square" />
       </div>
     </header>
