@@ -30,7 +30,7 @@ export default async function SheetPage({ params }: SheetPageProps) {
 
   return (
     <>
-      <Header sheetName={currentSheet.sheetName} />
+      <Header sheetId={sheetId} sheetName={currentSheet.sheetName} />
       {/* <Toolbar /> */}
       <main>
         <Sheet sheetId={sheetId} />

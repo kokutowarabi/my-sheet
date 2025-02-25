@@ -71,7 +71,7 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       e.currentTarget.blur();
     }
