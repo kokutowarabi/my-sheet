@@ -14,7 +14,7 @@ interface SheetProps {
   sheetId: string;
 }
 
-const HEADER_HEIGHT = 57;
+const HEADER_HEIGHT = 67;
 // const TOOLBAR_HEIGHT = 68;
 const TOOLBAR_HEIGHT = 0;
 
