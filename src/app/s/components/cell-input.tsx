@@ -5,6 +5,7 @@ import React, { useState, forwardRef } from "react";
 import updateColumn from "@/actions/update/update-column";
 import updateRow from "@/actions/update/update-row";
 import updateCell from "@/actions/update/update-cell";
+import { handleKeyDown } from "@/lib/keyboard";
 
 export interface CellInputProps {
   columnId?: string;
@@ -67,13 +68,6 @@ const CellInput = forwardRef<HTMLInputElement, CellInputProps>(({
     await upsertData();
     if (onFinishEditing) {
       onFinishEditing();
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      e.currentTarget.blur();
     }
   };
 

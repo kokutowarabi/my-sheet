@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import updateSheet from "@/actions/update/update-sheet";
+import { handleKeyDown } from "@/lib/keyboard";
 
 interface HeaderProps {
   sheetId: string;
@@ -20,15 +21,6 @@ interface HeaderProps {
 
 export default function Header({ sheetId, sheetName: initialSheetName }: HeaderProps) {
   const [sheetName, setSheetName] = useState(initialSheetName);
-
-  // Enter + Cmd or Enter + Ctrlでフォーカスを外す
-  // inputを使う時、必ずこの関数を使う
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      e.currentTarget.blur();
-    }
-  };
 
   // シート名が変更されたら更新
   const handleBlur = async () => {
