@@ -9,10 +9,7 @@ import {
 import Link from "next/link";
 import SignOutButton from "./sign-out";
 import { House } from "lucide-react";
-import { CELL_HEIGHT, CELL_WIDTH, CORNER_SIDE } from "@/lib/constants";
-
-const HEADER_HEIGHT = 67;
-const TOOLBAR_HEIGHT = 0;
+import { CELL_HEIGHT, CELL_WIDTH, CORNER_SIDE, HEADER_HEIGHT, TOOLBAR_HEIGHT } from "@/lib/constants";
 
 export default function Loading() {
   return (

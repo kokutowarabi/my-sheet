@@ -4,7 +4,7 @@ import ColumnHeaders from "./column-headers";
 import RowHeaders from "./row-headers";
 import BodyCells from "./body-cells";
 
-import { CELL_WIDTH, CORNER_SIDE } from "@/lib/constants";
+import { CELL_WIDTH, CORNER_SIDE, HEADER_HEIGHT, TOOLBAR_HEIGHT } from "@/lib/constants";
 
 import getColumns from "@/data/getColumns";
 import getRows from "@/data/getRows";
@@ -14,9 +14,7 @@ interface SheetProps {
   sheetId: string;
 }
 
-const HEADER_HEIGHT = 67;
 // const TOOLBAR_HEIGHT = 68;
-const TOOLBAR_HEIGHT = 0;
 
 export default async function Sheet({ sheetId }: SheetProps) {
   const columns = await getColumns(sheetId);
