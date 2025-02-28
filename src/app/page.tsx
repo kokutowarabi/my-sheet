@@ -29,7 +29,7 @@ export default async function Home() {
           <span className="text-6xl">Welcome to</span>
           <span className="text-9xl font-black">My Sheet</span>
         </h1>
-        <Link href="/sign-in" className="p-6 rounded-full text-white text-xl bg-blue-500 hover:bg-blue-600 transition">Sign In</Link>
+        <Link href="/sign-in" className="p-5 rounded-full text-white text-xl bg-blue-500 hover:bg-blue-600 transition">Sign In</Link>
       </main>
     </>
   );
