@@ -1,7 +1,7 @@
-// @/app/(auth)/sign-in/components/google-sign-in-button.tsx
 'use client'
 
 import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 export default function GoogleSignInButton() {
   const handleGoogleSignIn = () => {
@@ -12,9 +12,10 @@ export default function GoogleSignInButton() {
   return (
     <button
       onClick={handleGoogleSignIn}
-      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+      className="flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-md hover:shadow-none text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 gap-2 transition"
     >
-      Googleでログイン
+      <FcGoogle size={28} />
+      <span className="text-2xl font-semibold">Googleでログイン</span>
     </button>
   );
 }
