@@ -150,7 +150,7 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
               <SortableColumn column={col} />
               {activeColumn && (
                 <div
-                  className={`${isActiveColumn(col) ? 'transition-transform duration-150 ease' : ''}`}
+                  className={`${isActiveColumn(col) && 'transition-transform duration-150 ease'}`}
                   style={getColumnStyle(col)}
                 >
                   {getSortedCells(col.id).map((cell) => (
@@ -161,7 +161,8 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                       variant="default"
                       columnId={cell.columnId}
                       rowId={cell.rowId}
-                      isGhostHeaderCell={isActiveColumn(col)}
+                      className={`${isActiveColumn(col) && 'bg-blue-100 border-x-2 border-x-blue-500 last:border-b-2 last:border-b-blue-500'}`}
+                      // className={`${isActiveColumn(col) && 'border-x-2 border-x-blue-500 last:border-b-2 last:border-b-blue-500'}`}
                     />
                   ))}
                 </div>
@@ -185,7 +186,7 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                     columnId={`overlay-${col.id}`}
                     value={col.columnName}
                     variant="columnHeader"
-                    isDragOverlayHeader
+                    className="border-l shadow-lg border-x-2 border-t-2 border-x-gray-500 border-t-gray-500"
                   />
                   {getSortedCells(col.id).map((cell) => (
                     <Cell
@@ -195,7 +196,7 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                       variant="default"
                       columnId={cell.columnId}
                       rowId={cell.rowId}
-                      isDragOverlayHeaderCell
+                      className="border-l shadow-lg border-x-2 border-x-gray-500"
                     />
                   ))}
                 </div>

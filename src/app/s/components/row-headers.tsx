@@ -112,6 +112,9 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
     ? { transform: `translateY(${-CELL_HEIGHT}px)` }
     : { transform: `translateY(${CELL_HEIGHT}px)` };
 
+  const isActiveRow = (row: Row): boolean =>
+    activeRow ? row.id === activeRow.id : false;
+
   // activeRow または overRows に含まれる場合、cell コンテナに適用する transform を返す
   const getRowStyle = (row: Row): { transform?: string } => {
     if (activeRow && row.id === activeRow.id) return activeStyle;
@@ -146,18 +149,21 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
               <SortableRow row={row} />
               {/* 対応する cell コンテナにのみ transform スタイルを適用 */}
               {activeRow && (
-                <div className="flex transition-transform duration-200" style={getRowStyle(row)}>
-                {getSortedCells(row.id).map((cell) => (
-                  <Cell
-                    key={cell.id}
-                    cellId={cell.id}
-                    value={cell.value}
-                    variant="default"
-                    columnId={cell.columnId}
-                    rowId={cell.rowId}
-                  />
-                ))}
-              </div>
+                <div className="flex transition-transform duration-150 ease" style={getRowStyle(row)}>
+                  {getSortedCells(row.id).map((cell) => (
+                    <Cell
+                      key={cell.id}
+                      cellId={cell.id}
+                      value={cell.value}
+                      variant="default"
+                      columnId={cell.columnId}
+                      rowId={cell.rowId}
+                      // isGhostHeaderCell={activeRow ? row.id === activeRow.id : false}
+                      className={`${isActiveRow(row) && 'bg-blue-100 border-y-2 border-y-blue-500 last:border-b-2 last:border-b-blue-500'}`}
+                      // className={`${isActiveRow(row) && 'border-y-2 border-y-blue-500 last:border-r-2 last:border-r-blue-500'}`}
+                    />
+                  ))}
+                </div>
               )}
             </div>
           ))}
@@ -165,12 +171,14 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
       </SortableContext>
       <DragOverlay>
         {activeRow && (
-          <div key={activeRow.id} className="scale-[.99] flex">
+          <div key={activeRow.id} className="scale-[.95] flex">
             <Cell
               rowId={`overlay-${activeRow.id}`}
               value={activeRow.rowName}
               variant="rowHeader"
-              isDragOverlayHeader
+              // isDragOverlayHeader
+              // className="border-l shadow-lg"
+              className="border-l-2 shadow-lg border-y-2 border-y-gray-500 border-l-gray-500"
             />
             <div className="flex">
               {getSortedCells(activeRow.id).map((cell) => (
@@ -181,7 +189,8 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
                   variant="default"
                   columnId={cell.columnId}
                   rowId={cell.rowId}
-                  isDragOverlayHeaderCell
+                  // isDragOverlayHeaderCell
+                  className="border-l shadow-lg border-y-2 border-y-gray-500"
                 />
               ))}
             </div>

@@ -43,15 +43,11 @@ export interface CellProps
   rowId?: string;
   cellId?: string;
   value?: string;
-  isActiveCell?: boolean;
-
-  isDragOverlayHeader?: boolean;
-  isDragOverlayHeaderCell?: boolean;
+  className?: string;
 
   isGhostCell?: boolean;
 
   isGhostHeader?: boolean;
-  isGhostHeaderCell?: boolean;
 }
 
 const Cell = React.forwardRef<HTMLDivElement, CellProps>(
@@ -63,15 +59,9 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
     className,
     variant,
 
-    isActiveCell,
-
-    isDragOverlayHeader,
-    isDragOverlayHeaderCell,
-
     isGhostCell,
 
     isGhostHeader,
-    isGhostHeaderCell,
 
     ...props
   }, ref) => {
@@ -89,25 +79,14 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
       return null;
     }
 
-    const activeCellClass = isActiveCell ? 'shadow-lg border-t border-l' : "";
-
-    const dragOverlayHeaderClass = isDragOverlayHeader || isDragOverlayHeaderCell ? 'border-l shadow-lg' : "";
-
     const ghostCellClass = isGhostCell ? 'bg-gray-100/50 text-gray-400' : "";
 
     const ghostHeaderClass = isGhostHeader ? 'border-x-2 border-x-blue-500 border-t-2 border-t-blue-500' : "";
-    const ghostHeaderCellClass = isGhostHeaderCell
-      ? 'border-x-2 border-x-blue-500 last:border-b-2 last:border-b-blue-500'
-      : "";
 
     // セルがホバー状態でない場合の条件をまとめる
     const shouldDisableHover =
-      isActiveCell ||
-      isDragOverlayHeader ||
-      isDragOverlayHeaderCell ||
       isGhostCell ||
-      isGhostHeader ||
-      isGhostHeaderCell;
+      isGhostHeader;
 
     // セルの variant に応じたホバー時の背景色のクラスを決定する
     const hoverBgClass =
@@ -120,11 +99,8 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
 
     const cellClass =
       cn(cellVariants({ variant, className }),
-        activeCellClass,
-        dragOverlayHeaderClass,
         ghostCellClass,
         ghostHeaderClass,
-        ghostHeaderCellClass,
         hoverClass
       );
 

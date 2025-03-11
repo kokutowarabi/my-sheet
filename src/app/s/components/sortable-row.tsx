@@ -17,7 +17,8 @@ export default function SortableRow({ row }: SortableRowProps) {
           rowId={r.id} 
           value={r.rowName} 
           variant="rowHeader"
-          isGhostCell={isDragging}
+          // isGhostCell={isDragging}
+          className={`${isDragging && 'bg-blue-100 border-l-2 border-y-2 border-l-blue-500 border-y-blue-500'}`}
         />
       )} 
     />

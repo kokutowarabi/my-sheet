@@ -69,7 +69,7 @@ const SortableCell = memo(function SortableCell({ item }: { item: Cell }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={isDragging ? "ring-2 ring-blue-500" : ""}
+      // className={isDragging ? "ring-2 ring-blue-500" : ""}
       {...attributes}
       {...listeners}
     >
@@ -79,7 +79,8 @@ const SortableCell = memo(function SortableCell({ item }: { item: Cell }) {
         variant="default"
         columnId={item.columnId}
         rowId={item.rowId}
-        isGhostCell={isDragging}
+        // isGhostCell={isDragging}
+        className={`${isDragging && 'bg-blue-100 border-2 border-blue-500'}`}
       />
     </div>
   );
@@ -196,16 +197,16 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
         </div>
       </SortableContext>
       <DragOverlay>
-        {activeCell ? (
+        {activeCell && (
           <Cell
             cellId={activeCell.id}
             value={activeCell.value}
             variant="default"
             columnId={activeCell.columnId}
             rowId={activeCell.rowId}
-            isActiveCell
+            className="shadow-lg border-t border-l"
           />
-        ) : null}
+        )}
       </DragOverlay>
     </DndContext>
   );

@@ -17,7 +17,8 @@ export default function SortableColumn({ column }: SortableColumnProps) {
           columnId={col.id}
           value={col.columnName}
           variant="columnHeader"
-          isGhostHeader={isDragging}
+          // isGhostHeader={isDragging}
+          className={`${isDragging && 'bg-blue-100 border-t-2 border-x-2 border-t-blue-500 border-x-blue-500'}`}
         />
       )}
     />
