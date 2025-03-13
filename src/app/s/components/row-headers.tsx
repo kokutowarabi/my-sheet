@@ -158,9 +158,7 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
                       variant="default"
                       columnId={cell.columnId}
                       rowId={cell.rowId}
-                      // isGhostHeaderCell={activeRow ? row.id === activeRow.id : false}
                       className={`${isActiveRow(row) && 'bg-blue-100 border-y-2 border-y-blue-500 last:border-b-2 last:border-b-blue-500'}`}
-                      // className={`${isActiveRow(row) && 'border-y-2 border-y-blue-500 last:border-r-2 last:border-r-blue-500'}`}
                     />
                   ))}
                 </div>
@@ -171,16 +169,14 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
       </SortableContext>
       <DragOverlay>
         {activeRow && (
-          <div key={activeRow.id} className="scale-[.95] flex">
-            <Cell
-              rowId={`overlay-${activeRow.id}`}
-              value={activeRow.rowName}
-              variant="rowHeader"
-              // isDragOverlayHeader
-              // className="border-l shadow-lg"
-              className="border-l-2 shadow-lg border-y-2 border-y-gray-500 border-l-gray-500"
-            />
-            <div className="flex">
+          <div key={activeRow.id} className="scale-[.95] flex shadow-black shadow-inner">
+            <div className="flex shadow-lg shadow-black">
+              <Cell
+                rowId={`overlay-${activeRow.id}`}
+                value={activeRow.rowName}
+                variant="rowHeader"
+                className="border-t hover:bg-gray-100"
+              />
               {getSortedCells(activeRow.id).map((cell) => (
                 <Cell
                   key={cell.id}
@@ -189,8 +185,7 @@ export default function RowHeaders({ columns, rows: initialRows, cells }: RowHea
                   variant="default"
                   columnId={cell.columnId}
                   rowId={cell.rowId}
-                  // isDragOverlayHeaderCell
-                  className="border-l shadow-lg border-y-2 border-y-gray-500"
+                  className="border-l border-t hover:bg-white"
                 />
               ))}
             </div>

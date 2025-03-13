@@ -29,8 +29,8 @@ export default function Header({ sheetId, sheetName: initialSheetName }: HeaderP
   };
 
   return (
-    <header className="sticky top-0 left-0 border-b px-6 py-3 flex items-center justify-between bg-gray-600">
-      <h1 className="text-2xl font-bold">
+    <header className="sticky top-0 left-0 border-b px-6 py-3 flex items-center gap-6 bg-gray-600">
+      <h1 className="text-2xl font-bold flex-grow">
         <input
           id="sheetName"
           name="sheetName"
@@ -39,7 +39,7 @@ export default function Header({ sheetId, sheetName: initialSheetName }: HeaderP
           onChange={(e) => setSheetName(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          className="text-white bg-gray-600 border border-transparent hover:border-white cursor-default hover:cursor-pointer focus:cursor-text rounded px-2 py-1"
+          className="w-full text-white bg-gray-600 border border-transparent hover:border-white cursor-default hover:cursor-pointer focus:cursor-text rounded px-2 py-1"
         />
       </h1>
       <div className="flex items-center gap-4">

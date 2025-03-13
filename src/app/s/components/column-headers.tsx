@@ -162,7 +162,6 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                       columnId={cell.columnId}
                       rowId={cell.rowId}
                       className={`${isActiveColumn(col) && 'bg-blue-100 border-x-2 border-x-blue-500 last:border-b-2 last:border-b-blue-500'}`}
-                      // className={`${isActiveColumn(col) && 'border-x-2 border-x-blue-500 last:border-b-2 last:border-b-blue-500'}`}
                     />
                   ))}
                 </div>
@@ -181,12 +180,12 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
               const col = columns.find((c) => c.id === colId);
               if (!col) return null;
               return (
-                <div key={colId} className="scale-[.99]">
+                <div key={colId} className="scale-[.99] shadow-xl shadow-black">
                   <Cell
                     columnId={`overlay-${col.id}`}
                     value={col.columnName}
                     variant="columnHeader"
-                    className="border-l shadow-lg border-x-2 border-t-2 border-x-gray-500 border-t-gray-500"
+                    className="border-l shadow-lg hover:bg-gray-100"
                   />
                   {getSortedCells(col.id).map((cell) => (
                     <Cell
@@ -196,7 +195,7 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                       variant="default"
                       columnId={cell.columnId}
                       rowId={cell.rowId}
-                      className="border-l shadow-lg border-x-2 border-x-gray-500"
+                      className="border-l shadow-lg hover:bg-white"
                     />
                   ))}
                 </div>

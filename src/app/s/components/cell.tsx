@@ -7,14 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import CellInput from "./cell-input";
 
 const cellVariants = cva(
-  'border-r border-b flex justify-center items-center bg-white',
+  'border-r border-b flex justify-center items-center',
   {
     variants: {
       variant: {
-        default: "cursor-pointer border-gray-300",
+        default: "cursor-pointer border-gray-300 bg-white hover:bg-gray-100",
         corner: 'sticky top-0 left-0 z-corner-cell border-t border-l border-gray-400/80 bg-gray-100',
-        columnHeader: "cursor-pointer border-t border-gray-400/80 bg-gray-100",
-        rowHeader: "cursor-pointer border-l border-gray-400/80 bg-gray-100",
+        columnHeader: "cursor-pointer border-t border-gray-400/80 bg-gray-100 hover:bg-gray-300",
+        rowHeader: "cursor-pointer border-l border-gray-400/80 bg-gray-100 hover:bg-gray-300",
       },
     },
     defaultVariants: {
@@ -44,10 +44,6 @@ export interface CellProps
   cellId?: string;
   value?: string;
   className?: string;
-
-  isGhostCell?: boolean;
-
-  isGhostHeader?: boolean;
 }
 
 const Cell = React.forwardRef<HTMLDivElement, CellProps>(
@@ -58,11 +54,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
     value,
     className,
     variant,
-
-    isGhostCell,
-
-    isGhostHeader,
-
     ...props
   }, ref) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -79,31 +70,6 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
       return null;
     }
 
-    const ghostCellClass = isGhostCell ? 'bg-gray-100/50 text-gray-400' : "";
-
-    const ghostHeaderClass = isGhostHeader ? 'border-x-2 border-x-blue-500 border-t-2 border-t-blue-500' : "";
-
-    // セルがホバー状態でない場合の条件をまとめる
-    const shouldDisableHover =
-      isGhostCell ||
-      isGhostHeader;
-
-    // セルの variant に応じたホバー時の背景色のクラスを決定する
-    const hoverBgClass =
-      variant === 'default'
-        ? 'hover:bg-gray-100'
-        : 'hover:bg-gray-300';
-
-    // 上記条件に基づいて、ホバー時のクラスを適用するかどうか決定
-    const hoverClass = shouldDisableHover ? '' : hoverBgClass;
-
-    const cellClass =
-      cn(cellVariants({ variant, className }),
-        ghostCellClass,
-        ghostHeaderClass,
-        hoverClass
-      );
-
     if (value === undefined || variant === "corner") {
       return (
         <div
@@ -119,7 +85,7 @@ const Cell = React.forwardRef<HTMLDivElement, CellProps>(
     return (
       <div
         ref={ref}
-        className={cellClass}
+        className={cn(cellVariants({ variant, className }))}
         style={style(variant)}
         onClick={handleCellClick}
         {...props}
