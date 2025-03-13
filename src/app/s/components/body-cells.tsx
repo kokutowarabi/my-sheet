@@ -57,16 +57,15 @@ const sortCellsByGrid = (
 interface SortableCellProps {
   item: Cell;
   swappedCellIds: string[];
-  currentOverId: string | null;
   onTransitionEnd: (id: string) => void;
 }
 
-const SortableCell = memo(function SortableCell({ item, swappedCellIds, currentOverId, onTransitionEnd }: SortableCellProps) {
+const SortableCell = memo(function SortableCell({ item, swappedCellIds, onTransitionEnd }: SortableCellProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({
       id: item.id,
       transition: {
-        duration: 1000,
+        duration: 500,
         easing: "cubic-bezier(0.25, 1, 0.5, 1)",
       },
     });
@@ -78,8 +77,7 @@ const SortableCell = memo(function SortableCell({ item, swappedCellIds, currentO
   };
 
   // swappedCellIds に含まれている場合は border と bg-gray-50 を付与
-  // さらに、現在 hover 中（currentOverId === item.id）で swapped 状態でない場合、別のハイライト（ここでは bg-gray-50 のみ）を適用する例
-  const cellClasses = swappedCellIds.includes(item.id) && 'border-t border-l';
+  const cellClasses = swappedCellIds.includes(item.id) && 'border-t border-l border-gray-300';
 
   return (
     <div
@@ -121,7 +119,7 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
   // ドラッグ中のセルを管理
   const [activeCell, setActiveCell] = useState<Cell | null>(null);
   // 現在 hover しているセルの ID（UI上のハイライト用途として利用）
-  const [currentOverId, setCurrentOverId] = useState<string | null>(null);
+  const [, setCurrentOverId] = useState<string | null>(null);
   // swap されたセルの ID を配列で管理（複数セルに border/bg-gray-50 を付与可能）
   const [swappedCellIds, setSwappedCellIds] = useState<string[]>([]);
   const { activeHeaderDrag, overRows, overColumns, setActiveDragId } = useDragStore();
@@ -239,7 +237,6 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
                 key={item.id}
                 item={item}
                 swappedCellIds={swappedCellIds}
-                currentOverId={currentOverId}
                 onTransitionEnd={handleCellTransitionEnd}
               />
             );
