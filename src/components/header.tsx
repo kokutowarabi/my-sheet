@@ -39,7 +39,7 @@ export default function Header({ sheetId, sheetName: initialSheetName }: HeaderP
           onChange={(e) => setSheetName(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          className="w-full text-white bg-gray-600 border border-transparent hover:border-white cursor-default hover:cursor-pointer focus:cursor-text rounded px-2 py-1"
+          className="transition w-full text-white bg-gray-600 border border-transparent hover:border-white cursor-default hover:cursor-pointer focus:cursor-text rounded px-2 py-1"
         />
       </h1>
       <div className="flex items-center gap-4">
