@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link";
-import SignOutButton from "./sign-out";
+import SignOutButton from "@/app/s/[sheetId]/sign-out";
 import { House } from "lucide-react";
 import { CELL_HEIGHT, CELL_WIDTH, CORNER_SIDE, HEADER_HEIGHT, TOOLBAR_HEIGHT } from "@/lib/constants";
 

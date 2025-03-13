@@ -247,6 +247,7 @@ export default function BodyCells({ columns, rows, cells }: BodyCellsProps) {
         {activeCell && (
           <Cell
             cellId={activeCell.id}
+            // cellId={`overlay-body-cells-${activeCell.id}`}
             value={activeCell.value}
             variant="default"
             columnId={activeCell.columnId}

@@ -1,4 +1,3 @@
-import SignOutButton from "@/app/s/[sheetId]/sign-out";
 import getUser from "@/data/getUser";
 
 import { getServerSession } from "next-auth";
@@ -38,7 +37,6 @@ export default async function UserPage({ params }: UserPageProps) {
           </Link>
         ))}
       </div>
-      <SignOutButton />
       <span>{user.userName}</span>
     </main>
   )

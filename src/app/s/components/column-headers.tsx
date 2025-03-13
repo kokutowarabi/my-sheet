@@ -183,6 +183,7 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                 <div key={colId} className="scale-[.99] shadow-xl shadow-black">
                   <Cell
                     columnId={`overlay-${col.id}`}
+                    // columnId={`overlay-column-headers-${col.id}`}
                     value={col.columnName}
                     variant="columnHeader"
                     className="border-l shadow-lg hover:bg-gray-100"
@@ -191,6 +192,7 @@ export default function ColumnHeaders({ columns: initialColumns, rows, cells }: 
                     <Cell
                       key={cell.id}
                       cellId={cell.id}
+                      // cellId={`overlay-column-headers-${cell.id}`}
                       value={cell.value}
                       variant="default"
                       columnId={cell.columnId}
