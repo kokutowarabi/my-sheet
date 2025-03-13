@@ -77,7 +77,7 @@ const SortableCell = memo(function SortableCell({ item, swappedCellIds, onTransi
   };
 
   // swappedCellIds に含まれている場合は border と bg-gray-50 を付与
-  const returningCellClass = swappedCellIds.includes(item.id) && 'border-t border-l border-gray-300';
+  const returningCellClass = swappedCellIds.includes(item.id) && 'border-t border-l';
 
   return (
     <div
