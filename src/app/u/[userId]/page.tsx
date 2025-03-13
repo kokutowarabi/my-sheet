@@ -35,7 +35,7 @@ export default async function UserPage({ params }: UserPageProps) {
           <Link
             key={sheet.id}
             href={`/s/${sheet.id}`}
-            className="p-6 w-full rounded-md text-2xl bg-white hover:bg-gray-600 hover:text-white text-gray-600 font-bold transition"
+            className="p-6 w-full rounded-md text-2xl bg-white hover:bg-gray-500 hover:text-white text-gray-600 font-bold transition shadow-md"
           >
             {sheet.sheetName}
           </Link>
