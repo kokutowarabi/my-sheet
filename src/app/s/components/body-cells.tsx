@@ -77,7 +77,7 @@ const SortableCell = memo(function SortableCell({ item, swappedCellIds, onTransi
   };
 
   // swappedCellIds に含まれている場合は border と bg-gray-50 を付与
-  const cellClasses = swappedCellIds.includes(item.id) && 'border-t border-l border-gray-300';
+  const returningCellClass = swappedCellIds.includes(item.id) && 'border-t border-l border-gray-300';
 
   return (
     <div
@@ -98,7 +98,7 @@ const SortableCell = memo(function SortableCell({ item, swappedCellIds, onTransi
         variant="default"
         columnId={item.columnId}
         rowId={item.rowId}
-        className={`${isDragging ? 'bg-blue-100 border-2 border-blue-500' : ''} ${cellClasses}`}
+        className={`${isDragging ? 'bg-blue-100 border-2 border-blue-500' : ''} ${returningCellClass}`}
       />
     </div>
   );
