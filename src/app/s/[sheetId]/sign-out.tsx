@@ -13,7 +13,7 @@ export default function SignOutButton() {
     <div
       onClick={handleSignOut}
     >
-      <LogOut className="w-6 h-6 text-white" />
+      <LogOut className="w-6 h-6 text-gray-300 hover:text-white transition" />
     </div>
   );
 }

@@ -55,7 +55,7 @@ export default function Header({ sheetId, sheetName: initialSheetName }: HeaderP
           <Tooltip>
             <TooltipTrigger>
               <Link href="/">
-                <House className="w-6 h-6 text-white" />
+                <House className="w-6 h-6 text-gray-300 hover:text-white transition" />
               </Link>
             </TooltipTrigger>
             <TooltipContent>
