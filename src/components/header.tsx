@@ -49,7 +49,7 @@ export default function Header({ sheetId, sheetName: initialSheetName }: HeaderP
               <SignOutButton />
             </TooltipTrigger>
             <TooltipContent>
-              <p>サインアウト</p>
+              <p>サインアウトする</p>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -59,7 +59,7 @@ export default function Header({ sheetId, sheetName: initialSheetName }: HeaderP
               </Link>
             </TooltipTrigger>
             <TooltipContent>
-              <p>ホーム画面に戻る</p>
+              <p>トップ画面に戻る</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
